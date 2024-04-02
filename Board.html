@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        #canvas {
+            border: 2px solid rgb(13, 30, 12);
+            border-radius: 20px;
+            background-color: white;
+            cursor: crosshair;
+            font-weight: bolder;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+        }
+
+        h1 {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: blue;
+            font-weight: bolder;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            text-shadow: 5px 4px 6px grey;
+            font-size: 2rem;
+        }
+
+        button {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h1 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>This is Black Board</h1>
+    <canvas id="canvas" width="1500" height="600"></canvas>
+    <button id="eraseBtn">Erase Blackboard</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let isErasing = false;
+
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw);
+
+        document.getElementById('eraseBtn').addEventListener('click', eraseCanvas);
+
+        function startDraw(event) {
+            isDrawing = true;
+            if (isErasing) {
+                erase(event);
+            } else {
+                draw(event);
+            }
+        }
+
+        function draw(event) {
+            if (!isDrawing) return;
+            const x = event.pageX - canvas.offsetLeft;
+            const y = event.pageY - canvas.offsetTop;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = 'red';
+        }
+
+        function erase(event) {
+            const x = event.pageX - canvas.offsetLeft;
+            const y = event.pageY - canvas.offsetTop;
+
+            ctx.clearRect(x - 10, y - 10, 20, 20);
+        }
+
+        function stopDraw() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function eraseCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+</body>
+</html>
